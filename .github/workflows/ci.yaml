@@ -1,0 +1,41 @@
+name: CI for Jekyll Site
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2.2' # or the version you use
+
+    - name: Install Dependencies
+      run: |
+        gem install bundler
+        bundle install
+
+    - name: Build Jekyll Site
+      run: |
+        bundle exec jekyll build
+
+    - name: Run Tests # Assuming you have tests for your Jekyll site
+      run: |
+        # Add commands to run your tests here
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        directory: ./coverage # Replace with the path to your coverage reports
+        flags: unittests # Optional
+        name: codecov-umbrella # Optional
